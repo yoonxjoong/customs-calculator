@@ -1,0 +1,30 @@
+package com.yoonxjoon.api.entity;
+
+import com.yoonxjoon.api.constant.CalculatorType;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.util.List;
+
+@Entity
+@Table(name = "products")
+public class Product {
+    @Id
+    @Column(name = "product_id")
+    private String id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "trans_fee")
+    private BigDecimal transFee;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Price> prices;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ratio> ratios;
+}
