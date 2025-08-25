@@ -1,12 +1,19 @@
 package com.yoonxjoon.api.domain.model;
 
+import com.yoonxjoon.api.constant.CalculatorType;
 import com.yoonxjoon.api.constant.CurUnitCd;
+import com.yoonxjoon.api.constant.RatioTypeCd;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.With;
 
 @Builder
+@With
 public class Product {
 
     @Getter
@@ -16,21 +23,12 @@ public class Product {
     @Getter
     private String name;
     @Getter
-    private BigDecimal transFee;
+    private CalculatorType calculatorType;
 
     // 불변성을 위해 final로 선언하고, 생성자를 통해 초기화
     private final List<Price> prices;
     private final List<Ratio> ratios;
-
-    public Product(String id, String categoryId, String name, BigDecimal transFee,
-            List<Price> prices, List<Ratio> ratios) {
-        this.id = id;
-        this.categoryId = categoryId;
-        this.name = name;
-        this.transFee = transFee;
-        this.prices = prices;
-        this.ratios = ratios;
-    }
+    private final List<TransFee> transFees;
 
     // 리스트는 불변성을 위해 새로운 리스트를 반환
     public List<Price> getPrices() {
@@ -41,6 +39,35 @@ public class Product {
         return List.copyOf(ratios);
     }
 
+    public List<TransFee> getTransFees() {
+        return List.copyOf(transFees);
+    }
 
+    public BigDecimal getKrwPriceAmount() {
+        return prices.stream()
+                .filter(obj -> obj.getCurUnitCd() == CurUnitCd.KRW)
+                .map(Price::getAmount)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("KRW에 해당하는 가격이 없습니다."));
+    }
 
+    public BigDecimal getKrwTransFeeAmount() {
+        return transFees.stream()
+                .filter(obj -> obj.getCurUnitCd() == CurUnitCd.KRW)
+                .map(TransFee::getAmount)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("KRW에 해당하는 가격이 없습니다."));
+    }
+
+    // 과세가격 = 상품가격 + 운임료
+    public BigDecimal getOriginAmount() {
+        return this.getKrwPriceAmount().add(this.getKrwTransFeeAmount());
+    }
+
+    public Map<RatioTypeCd, Ratio> getRatioMap() {
+        return ratios.stream().collect(Collectors.toMap(Ratio::getRatioTypeCd,
+                ratio -> ratio,
+                (existing, replacement) -> existing)
+        );
+    }
 }

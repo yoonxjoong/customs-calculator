@@ -1,13 +1,13 @@
 package com.yoonxjoon.api.service;
 
-import com.yoonxjoon.api.constant.CurUnitCd;
+import com.yoonxjoon.api.constant.CalculatorType;
 import com.yoonxjoon.api.domain.model.Price;
 import com.yoonxjoon.api.domain.model.Product;
+import com.yoonxjoon.api.domain.model.Ratio;
+import com.yoonxjoon.api.domain.model.TransFee;
 import com.yoonxjoon.api.dto.TaxCalculationRequest;
 import com.yoonxjoon.api.dto.TaxCalculationResponse;
 import com.yoonxjoon.api.mapper.TaxCalculatorMapper;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,40 +15,41 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class TaxCalculatorService {
+
     private final TaxCalculatorMapper taxCalculatorMapper;
+    private final TaxCalculatorFactory taxCalculatorFactory;
+    private final ProductPreprocessor productPreprocessor;
 
     public TaxCalculationResponse calculate(TaxCalculationRequest request) {
         Product originalProduct = taxCalculatorMapper.toDomain(request);
 
-        List<Price> pricesWithExRate = addExchangedPrices(originalProduct.getPrices());
+        // Preprocessor를 사용해 데이터 가공
+        List<Price> pricesWithExRate = productPreprocessor.addExchangedPrices(
+                originalProduct.getPrices()
+        );
 
-        return new TaxCalculationResponse();
-    }
+        List<Ratio> ratios = productPreprocessor.addTaxRatio(originalProduct);
 
-    private List<Price> addExchangedPrices(List<Price> prices) {
-        // 기존 prices 리스트를 복사하여 새로운 리스트를 만듭니다.
-        List<Price> newPrices = new ArrayList<>(prices);
+        List<TransFee> transFees = productPreprocessor.addTransFee(
+                originalProduct.getTransFees()
+        );
 
-        Price sourcePrice = newPrices.get(0);
-        if (sourcePrice == null) {
-            return newPrices;
-        }
+        // with 메서드로 불변성을 유지하며 새로운 Product 객체 생성
+        Product processedProduct = originalProduct
+                .withPrices(pricesWithExRate)
+                .withRatios(ratios)
+                .withTransFees(transFees);
 
-        if (!sourcePrice.getCurUnitCd().equals(CurUnitCd.USD)) {
-            Price usdPrice = Price.builder()
-                    .amount(sourcePrice.getAmount().multiply(BigDecimal.ONE))
-                    .curUnitCd(CurUnitCd.USD)
-                    .build();
-            newPrices.add(usdPrice);
-        }
+        // 팩토리 패턴으로 계산기 객체 획득
+        TaxCalculator taxCalculator = taxCalculatorFactory.getCalculator(
+                CalculatorType.CALCULATOR_CODE_3
+        );
 
-        Price targetPrice = Price.builder()
-                .amount(sourcePrice.getAmount().multiply(BigDecimal.ONE))
-                .curUnitCd(CurUnitCd.KRW)
-                .build();
-        newPrices.add(targetPrice);
+        // 계산 로직 실행. calculate()는 새로운 Product를 반환
+        Product ret = taxCalculator.calculate(processedProduct);
 
-        return List.copyOf(newPrices);
+        // 최종 결과를 DTO로 변환
+        return taxCalculatorMapper.toDto(ret);
     }
 
 }

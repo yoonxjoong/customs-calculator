@@ -19,6 +19,8 @@ public class TaxCalculationRequest {
 
     private BigDecimal transFee;
 
+    private String transFeeUnitCd;
+
     private BigDecimal price;
 
     private String curUnitCd;
