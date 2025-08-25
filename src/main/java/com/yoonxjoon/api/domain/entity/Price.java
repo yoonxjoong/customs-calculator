@@ -1,4 +1,4 @@
-package com.yoonxjoon.api.entity;
+package com.yoonxjoon.api.domain.entity;
 
 import com.yoonxjoon.api.constant.CurUnitCd;
 import jakarta.persistence.Column;

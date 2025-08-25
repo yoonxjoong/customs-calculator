@@ -1,4 +1,4 @@
-package com.yoonxjoon.api.dto;
+package com.yoonxjoon.api.domain.dto;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;

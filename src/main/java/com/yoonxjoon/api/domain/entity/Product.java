@@ -1,4 +1,4 @@
-package com.yoonxjoon.api.entity;
+package com.yoonxjoon.api.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

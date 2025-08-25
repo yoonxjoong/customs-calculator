@@ -1,11 +1,9 @@
 package com.yoonxjoon.api.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.yoonxjoon.api.constant.CurUnitCd;
 import com.yoonxjoon.api.domain.model.Price;
 import com.yoonxjoon.api.domain.model.Product;
-import com.yoonxjoon.api.dto.TaxCalculationRequest;
+import com.yoonxjoon.api.domain.dto.TaxCalculationRequest;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
