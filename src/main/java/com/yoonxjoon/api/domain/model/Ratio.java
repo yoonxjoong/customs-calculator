@@ -6,13 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.With;
 
+@Getter
 @With
 @Builder
 public class Ratio {
-    @Getter
     private final RatioTypeCd ratioTypeCd;
-    @Getter
     private final BigDecimal value;
-    @Getter
     private final BigDecimal amount;
 }

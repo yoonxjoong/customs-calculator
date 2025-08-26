@@ -9,11 +9,11 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-// 관세, 주세, 교육세, 부가세
-// 관세[과세가격*관세율]+주세[(과세가격+관세)*주세율]+교육세[주세*교육세율]+부가세[(과세가격+관세+주세+교육세)*부가세율]
+// 주세, 교육세, 부가세
+// 주세[과세가격*주세율]+교육세[주세*교육세율]+부가세[(과세가격+주세+교육세)*부가세율]
 @Component
 @Slf4j
-public class TaxCalculator3 extends AbstractTaxCalculator {
+public class TaxCalculator4 extends AbstractTaxCalculator {
 
     @Override
     public Product calculate(Product product) {
@@ -21,13 +21,9 @@ public class TaxCalculator3 extends AbstractTaxCalculator {
 
         Map<RatioTypeCd, Ratio> ratioMap = product.getRatioMap();
 
-        // 관세 = (과세가격 * 관세율)
-        Ratio customsRatio = getRatioByType(ratioMap, RatioTypeCd.CUSTOMS);
-        BigDecimal customs = originAmount.multiply(customsRatio.getValue());
-
-        // 주세 = (과세가격+관세)*주세율
+        // 주세 = 과세가격 * 주세율
         Ratio liquorRatio = getRatioByType(ratioMap, RatioTypeCd.LIQUOR);
-        BigDecimal liquor = (originAmount.add(customs)).multiply(liquorRatio.getValue());
+        BigDecimal liquor = originAmount.multiply(liquorRatio.getValue());
 
         // 교육세[주세*교육세율]
         Ratio eduRatio = getRatioByType(ratioMap, RatioTypeCd.EDU);
@@ -35,16 +31,13 @@ public class TaxCalculator3 extends AbstractTaxCalculator {
 
         // 부가세 = 과세가격 * 부가세율
         Ratio vatRatio = getRatioByType(ratioMap, RatioTypeCd.VAT);
-        BigDecimal vat = (originAmount.add(customs).add(liquor).add(edu)).multiply(
-                vatRatio.getValue());
+        BigDecimal vat = (originAmount.add(liquor).add(edu)).multiply(vatRatio.getValue());
 
-        Ratio newCustomsRatio = customsRatio.withAmount(customs);
         Ratio newLiquorRatio = liquorRatio.withAmount(liquor);
         Ratio newEduRatio = eduRatio.withAmount(edu);
         Ratio newVatRatio = vatRatio.withAmount(vat);
 
-        return product.withRatios(
-                List.of(newCustomsRatio, newLiquorRatio, newEduRatio, newVatRatio));
+        return product.withRatios(List.of(newLiquorRatio, newEduRatio, newVatRatio));
 
     }
 }

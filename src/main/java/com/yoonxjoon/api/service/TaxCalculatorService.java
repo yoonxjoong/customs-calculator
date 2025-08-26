@@ -35,14 +35,15 @@ public class TaxCalculatorService {
         );
 
         // with 메서드로 불변성을 유지하며 새로운 Product 객체 생성
-        Product processedProduct = originalProduct
-                .withPrices(pricesWithExRate)
-                .withRatios(ratios)
-                .withTransFees(transFees);
+        Product processedProduct = originalProduct.toBuilder()
+                .prices(pricesWithExRate)
+                .ratios(ratios)
+                .transFees(transFees)
+                .build();
 
         // 팩토리 패턴으로 계산기 객체 획득
         TaxCalculator taxCalculator = taxCalculatorFactory.getCalculator(
-                CalculatorType.CALCULATOR_CODE_3
+                CalculatorType.CALCULATOR_CODE_8
         );
 
         // 계산 로직 실행. calculate()는 새로운 Product를 반환

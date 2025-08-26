@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.With;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder(toBuilder=true)
 @With
+@Getter
+@AllArgsConstructor
 public class Product {
 
     @Getter

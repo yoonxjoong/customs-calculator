@@ -1,12 +1,14 @@
 package com.yoonxjoon.api.mapper;
 
 import com.yoonxjoon.api.constant.CurUnitCd;
+import com.yoonxjoon.api.domain.dto.TaxCalculationRequest;
+import com.yoonxjoon.api.domain.dto.TaxCalculationResponse;
+import com.yoonxjoon.api.domain.model.BasisAboveProduct;
 import com.yoonxjoon.api.domain.model.Price;
 import com.yoonxjoon.api.domain.model.Product;
 import com.yoonxjoon.api.domain.model.Ratio;
+import com.yoonxjoon.api.domain.model.RuralProduct;
 import com.yoonxjoon.api.domain.model.TransFee;
-import com.yoonxjoon.api.domain.dto.TaxCalculationRequest;
-import com.yoonxjoon.api.domain.dto.TaxCalculationResponse;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,26 @@ public class TaxCalculatorMapper {
                 .amount(request.getTransFee())
                 .curUnitCd(transFeeUnitCd)
                 .build());
+
+        if (request.getProductId().startsWith("BASIS_ABOVE")) {
+            return BasisAboveProduct.builder()
+                    .id(request.getProductId())
+                    .categoryId(request.getCategoryId())
+                    .prices(prices)
+                    .transFees(transFees)
+                    .basisAboveAmount(BigDecimal.valueOf(100))
+                    .build();
+        }
+
+        if (request.getProductId().startsWith("RURAL")) {
+            return RuralProduct.builder()
+                    .id(request.getProductId())
+                    .categoryId(request.getCategoryId())
+                    .prices(prices)
+                    .transFees(transFees)
+                    .basisAboveAmount(BigDecimal.valueOf(100))
+                    .build();
+        }
 
         return Product.builder()
                 .id(request.getProductId())
