@@ -14,6 +14,10 @@ public enum CalculatorType {
     CALCULATOR_CODE_10("10"), // 미발생
     CALCULATOR_CODE_11("11"), // 주세(용량*리터당 주세금액), 교육세
     CALCULATOR_CODE_12("12"), // 관세, 주세(용량*리터당 주세금액), 교육세, 부가세
+    CALCULATOR_CODE_13("13"), // 관세, 주세(용량*리터당 주세금액), 교육세, 부가세
+    CALCULATOR_CODE_14("14"), // 관세, 주세(용량*리터당 주세금액), 교육세, 부가세
+    CALCULATOR_CODE_15("15"), // 관세, 주세(용량*리터당 주세금액), 교육세, 부가세
+
     ;
 
     private final String type;
