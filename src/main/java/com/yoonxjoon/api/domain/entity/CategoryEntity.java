@@ -4,10 +4,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "categoies")
-public class Category {
+public class CategoryEntity {
     @Id
     @Column(name = "category_id")
     private String id;

@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder(toBuilder=true)
+@SuperBuilder(toBuilder = true)
 @With
 @Getter
 @AllArgsConstructor
@@ -72,5 +72,20 @@ public class Product {
                 ratio -> ratio,
                 (existing, replacement) -> existing)
         );
+    }
+
+    public boolean taxYn() {
+        BigDecimal usd = prices.stream()
+                .filter(obj -> obj.getCurUnitCd() == CurUnitCd.USD)
+                .map(Price::getAmount)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("USD 금액이 없습니다."));
+
+        if (usd.compareTo(BigDecimal.valueOf(200)) < 0) {
+            return false;
+        }
+
+        return true;
+
     }
 }

@@ -24,5 +24,4 @@ public class TaxCalculationRequest {
     private BigDecimal price;
 
     private String curUnitCd;
-
 }

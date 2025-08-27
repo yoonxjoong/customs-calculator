@@ -11,24 +11,27 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "products")
-public class Product {
+public class ProductEntity {
+
     @Id
     @Column(name = "product_id")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private Category category;
+    private CategoryEntity categoryEntity;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name ="calculator_type")
+    @Column(name = "calculator_type")
     private CalculatorType calculatorType;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ratio> ratios;
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RatioEntity> ratioEntitiy;
 }
