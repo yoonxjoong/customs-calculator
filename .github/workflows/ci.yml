@@ -1,0 +1,22 @@
+name: Simple Workflow
+
+# 어떤 이벤트에 이 워크플로우를 실행할지 정의합니다.
+on:
+  push:
+    branches:
+      - master # master 브랜치에 push가 발생할 때 실행합니다.
+
+
+# 실행될 작업(jobs)들을 정의합니다.
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # GitHub Actions의 checkout 액션을 사용하여 레포지토리를 가져옵니다.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 셸 명령어를 실행합니다.
+      - name: Say Hello
+        run: echo "Hello, World!"
