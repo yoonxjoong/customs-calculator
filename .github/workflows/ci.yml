@@ -6,7 +6,7 @@ name: Java CI with Gradle
 on:
   pull_request:
     branches:
-      - main
+      - master
       - develop
 
 # 여러 작업을 정의하는 섹션
