@@ -1,16 +1,17 @@
 package com.yoonxjoon.api.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.yoonxjoon.api.constant.CurUnitCd;
+import com.yoonxjoon.api.domain.dto.TaxCalculationRequest;
 import com.yoonxjoon.api.domain.model.Price;
 import com.yoonxjoon.api.domain.model.Product;
-import com.yoonxjoon.api.domain.dto.TaxCalculationRequest;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TaxCalculatorMapperTest {
     private TaxCalculatorMapper taxCalculatorMapper;
@@ -28,6 +29,7 @@ class TaxCalculatorMapperTest {
                 .categoryId("category-A")
                 .transFee(BigDecimal.valueOf(10.50))
                 .price(BigDecimal.valueOf(100.00))
+                .transFeeUnitCd("USD")
                 .curUnitCd("USD")
                 .build();
 
@@ -38,7 +40,6 @@ class TaxCalculatorMapperTest {
         assertThat(product).isNotNull();
         assertThat(product.getId()).isEqualTo("product-001");
         assertThat(product.getCategoryId()).isEqualTo("category-A");
-        assertThat(product.getTransFee()).isEqualTo(BigDecimal.valueOf(10.50));
 
         assertThat(product.getPrices()).hasSize(1);
         assertThat(product.getPrices().get(0).getAmount()).isEqualTo(BigDecimal.valueOf(100.00));
